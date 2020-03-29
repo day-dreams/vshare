@@ -13,7 +13,7 @@
   "rooms": [
     {
       "rid": "mockrid",
-      "video": "mockvid"
+      "vid": "mockvid"
     }
   ]
 }

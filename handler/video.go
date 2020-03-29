@@ -10,6 +10,7 @@ import (
 )
 
 type video struct {
+	VID     string
 	Title   string
 	Desc    string
 	TxCloud struct {
@@ -19,10 +20,11 @@ type video struct {
 }
 
 var (
-	videos []video
+	videos    []video
+	vid2video = map[string]video{}
 )
 
-func init() {
+func setupVideo() {
 	vfile := utils.VFile
 	bytes, err := ioutil.ReadFile(vfile)
 	if err != nil {
@@ -31,18 +33,22 @@ func init() {
 	data := string(bytes)
 
 	gjson.Get(data, "videos").ForEach(func(key, value gjson.Result) bool {
+		vid := value.Get("vid").String()
 		vtitle := value.Get("vtitle").String()
 		vdesc := value.Get("vdesc").String()
 		fileid := value.Get("tcloud").Get("fileid").String()
 		appid := value.Get("tcloud").Get("appid").String()
-		videos = append(videos, video{
+		v := video{
+			VID:   vid,
 			Title: vtitle,
 			Desc:  vdesc,
 			TxCloud: struct {
 				AppId  string
 				FileId string
 			}{AppId: appid, FileId: fileid},
-		})
+		}
+		videos = append(videos, v)
+		vid2video[vid] = v
 		return true
 	})
 }
