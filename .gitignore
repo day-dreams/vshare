@@ -1,0 +1,11 @@
+.idea/
+logs/
+*.log
+coverage.data
+coverage.html
+client
+vendor
+build
+*.test
+.vscode
+.idea
