@@ -6,6 +6,11 @@ WORKDIR=$(CURDIR)
 build:
 	go build -o build/VShareServer main.go
 run: build
-	build/VShareServer --vfile=$(WORKDIR)/runtime/videos.json
+	build/VShareServer \
+	--vfile=$(WORKDIR)/runtime/config.json \
+	--vindex=$(WORKDIR)/runtime/index.html
 daemon: build
-	(pkill VShareServer || echo "skip kill" )&& nohup build/VShareServer --vfile=$(WORKDIR)/runtime/config.json &> ./build/vshare.log &
+	(pkill VShareServer || echo "skip kill" )&& nohup build/VShareServer \
+	--vfile=$(WORKDIR)/runtime/config.json \
+	--vindex=$(WORKDIR)/runtime/index.html \
+	&> ./build/vshare.log &

@@ -7,11 +7,13 @@ import (
 )
 
 var (
-	VFile string
+	VFile  string
+	VIndex string
 )
 
 func init() {
 	flag.StringVar(&VFile, "vfile", "", "video file path")
+	flag.StringVar(&VIndex, "vindex", "", "index html path")
 	flag.Parse()
 }
 

@@ -1,5 +1,289 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <title>腾讯云视频点播示例</title>
+    <!-- 引入播放器 css 文件 -->
+    <link href="//imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.css" rel="stylesheet">
+    <!-- 如需在IE8、9浏览器中初始化播放器，浏览器需支持Flash并在页面中引入 -->
+    <!--[if lt IE 9]>
+    <script src="//imgcache.qq.com/open/qcloud/video/tcplayer/ie8/videojs-ie8.js"></script>
+    <![endif]-->
+    <!-- 如果需要在 Chrome Firefox 等现代浏览器中通过H5播放hls，需要引入 hls.js -->
+    <script src="//imgcache.qq.com/open/qcloud/video/tcplayer/libs/hls.min.0.12.4.js"></script>
+    <!-- 引入播放器 js 文件 -->
+    <script src="//imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.v4.min.js"></script>
+    <!-- 示例 CSS 样式可自行删除 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <style>
+        img {
+            max-width: 100%;
+        }
+
+        .player {
+            width: 1080px;
+            height: 800px;
+            top: 100px;
+            left: 150px;
+        }
+
+        .inbox_msg {
+            border: 1px solid #c4c4c4;
+            clear: both;
+            overflow: hidden;
+            width: 450px;
+            height: 600px;
+            position: fixed;
+            top: 130px;
+            right: 100px;
+        }
+
+
+        .recent_heading h4 {
+            color: #05728f;
+            font-size: 21px;
+            margin: auto;
+        }
+
+        .srch_bar input {
+            border: 1px solid #cdcdcd;
+            border-width: 0 0 1px 0;
+            width: 80%;
+            padding: 2px 0 4px 6px;
+            background: none;
+        }
+
+        .srch_bar .input-group-addon button {
+            background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+            border: medium none;
+            padding: 0;
+            color: #707070;
+            font-size: 18px;
+        }
+
+        .srch_bar .input-group-addon {
+            margin: 0 0 0 -27px;
+        }
+
+        .chat_ib h5 {
+            font-size: 15px;
+            color: #464646;
+            margin: 0 0 8px 0;
+        }
+
+        .chat_ib h5 span {
+            font-size: 13px;
+            float: right;
+        }
+
+        .chat_ib p {
+            font-size: 14px;
+            color: #989898;
+            margin: auto
+        }
+
+
+        .incoming_msg_img {
+            display: inline-block;
+            width: 6%;
+        }
+
+        .received_msg {
+            display: inline-block;
+            padding: 0 0 0 10px;
+            vertical-align: top;
+            width: 92%;
+        }
+
+        .received_withd_msg p {
+            background: #ebebeb none repeat scroll 0 0;
+            border-radius: 3px;
+            color: #646464;
+            font-size: 14px;
+            margin: 0;
+            padding: 5px 10px 5px 12px;
+            width: 100%;
+        }
+
+        .time_date {
+            color: #747474;
+            display: block;
+            font-size: 12px;
+            margin: 8px 0 0;
+        }
+
+        .received_withd_msg {
+            width: 57%;
+        }
+
+        .mesgs {
+            float: left;
+            padding: 30px 15px 0 25px;
+            /*width: 60%;*/
+        }
+
+        .sent_msg p {
+            background: #05728f none repeat scroll 0 0;
+            border-radius: 3px;
+            font-size: 14px;
+            margin: 0;
+            color: #fff;
+            padding: 5px 10px 5px 12px;
+            width: 100%;
+        }
+
+        .outgoing_msg {
+            overflow: hidden;
+            margin: 26px 0 26px;
+        }
+
+        .sent_msg {
+            float: right;
+            width: 46%;
+        }
+
+        .input_msg_write input {
+            background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+            border: medium none;
+            color: #4c4c4c;
+            font-size: 15px;
+            min-height: 48px;
+            width: 100%;
+        }
+
+        .type_msg {
+            border-top: 1px solid #c4c4c4;
+            position: relative;
+        }
+
+        .msg_send_btn {
+            background: #05728f none repeat scroll 0 0;
+            border: medium none;
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            font-size: 17px;
+            height: 33px;
+            position: absolute;
+            right: 0;
+            top: 11px;
+            width: 33px;
+        }
+
+        .messaging {
+            padding: 0 0 50px 0;
+        }
+
+        .msg_history {
+            height: 516px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
 <body>
-hello world
+<div class="inbox_msg">
+    <div class="mesgs">
+        <div class="msg_history">
+            <div class="incoming_msg">
+                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
+                                                   alt="sunil"></div>
+                <div class="received_msg">
+                    <div class="received_withd_msg">
+                        <p>Test which is a new approach to have all
+                            solutions</p>
+                        <span class="time_date"> 11:01 AM    |    June 9</span></div>
+                </div>
+            </div>
+            <div class="outgoing_msg">
+                <div class="sent_msg">
+                    <p>Test which is a new approach to have all
+                        solutions</p>
+                    <span class="time_date"> 11:01 AM    |    June 9</span></div>
+            </div>
+            <div class="incoming_msg">
+                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
+                                                   alt="sunil"></div>
+                <div class="received_msg">
+                    <div class="received_withd_msg">
+                        <p>Test, which is a new approach to have</p>
+                        <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
+                </div>
+            </div>
+            <div class="outgoing_msg">
+                <div class="sent_msg">
+                    <p>Apollo University, Delhi, India Test</p>
+                    <span class="time_date"> 11:01 AM    |    Today</span></div>
+            </div>
+            <div class="incoming_msg">
+                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
+                                                   alt="sunil"></div>
+                <div class="received_msg">
+                    <div class="received_withd_msg">
+                        <p>We work directly with our designers and suppliers,
+                            and sell direct to you, which means quality, exclusive
+                            products, at a price anyone can afford.</p>
+                        <span class="time_date"> 11:01 AM    |    Today</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="type_msg">
+            <div class="input_msg_write">
+                <input type="text" class="write_msg" placeholder="Type a message"/>
+                <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 设置播放器容器 -->
+<video class="player" id="player-container-id" preload="auto" width="600" height="400" playsinline webkit-playsinline
+       x5-playsinline></video>
+<!--
+注意事项：
+* 播放器容器必须为 video 标签
+* player-container-id 为播放器容器的ID，可自行设置
+* 播放器区域的尺寸请按需设置，建议通过 css 进行设置，通过css可实现容器自适应等效果
+* playsinline webkit-playsinline x5-playsinline 这几个属性是为了在标准移动端浏览器不劫持视频播放的情况下实现行内播放，此处仅作示例，请按需使用
+-->
+<script>
+    var player = TCPlayer("player-container-id", {
+        /**player-container-id 为播放器容器ID，必须与html中一致*/
+        fileID: "5285890800596505413", /**请传入需要播放的视频fileID 必须 */
+        appID: "1254217685", /**请传入点播账号的appID 必须 */
+        /**其他参数请在开发文档中查看 */
+    });
+
+    $(document).ready(function RoomInfo(RoomId) {
+        var host = document.location.host;
+        const url = "//" + host + "/api/room/info?rid=" + RoomId;
+        $.ajax(
+            {
+                url: url,
+                type: "GET",
+                success: function (response) {
+
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            }
+        )
+    })
+</script>
 </body>
 </html>
