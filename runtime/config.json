@@ -1,0 +1,19 @@
+{
+  "videos": [
+    {
+      "vid": "mockvid",
+      "vtitle": "测试视频",
+      "vdesc": "测试用的",
+      "tcloud": {
+        "fileid": "5285890800291750402",
+        "appid": "1254217685"
+      }
+    }
+  ],
+  "rooms": [
+    {
+      "rid": "mockrid",
+      "video": "mockvid"
+    }
+  ]
+}
