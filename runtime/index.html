@@ -262,14 +262,18 @@
 -->
 <script>
     var player = TCPlayer("player-container-id", {
+        // https://cloud.tencent.com/document/product/266/14424
         /**player-container-id 为播放器容器ID，必须与html中一致*/
         fileID: "5285890800596505413", /**请传入需要播放的视频fileID 必须 */
         appID: "1254217685", /**请传入点播账号的appID 必须 */
         /**其他参数请在开发文档中查看 */
     });
+    player.error(function (err) {
+        console.log("player.err :", err)
+    });
 
     function ok(response) {
-        return response.code == 0;
+        return response.data.code == 0;
     }
 
     $(document).ready(function RoomInfo() {
@@ -281,10 +285,12 @@
             }
         }).then(function (res) {
             if (ok(res)) {
-                console.log("res err", res);
+                console.log("res    ", res);
+                console.log("player inside:", player);
+                player.currentTime(120);
                 // todo pull chat history from ws
             } else {
-                console.log("res    ", res)
+                console.log("res err", res);
             }
         }).catch(function (err) {
             console.log("err    ", err)
