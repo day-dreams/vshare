@@ -199,7 +199,7 @@
 <body>
 <div class="inbox_msg">
     <div class="mesgs">
-        <div class="msg_history">
+        <div class="msg_history" id="msg_history">
 
         </div>
         <div class="type_msg">
@@ -317,8 +317,14 @@
                     now +
                     '</span></div> </div>')
                 document.getElementById('input_msg').value = ""
+                scrollToBottom()
             }
         )
+    }
+
+    function scrollToBottom() {
+        var objDiv = document.getElementById("msg_history");
+        objDiv.scrollTop = objDiv.scrollHeight;
     }
 
     function ApiReadStatus() {
@@ -346,6 +352,7 @@
                         '</span></div> </div> </div>'
                     )
                 }
+                scrollToBottom()
             }
 
             // 不要自己改状态，又触发别人改了
