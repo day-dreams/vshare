@@ -49,6 +49,7 @@
             height: 100%;
             position: fixed;
             right: 0%;
+
         }
 
 
@@ -202,53 +203,14 @@
 <div class="inbox_msg">
     <div class="mesgs">
         <div class="msg_history">
-            <div class="incoming_msg">
-                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                   alt="sunil"></div>
-                <div class="received_msg">
-                    <div class="received_withd_msg">
-                        <p>Test which is a new approach to have all
-                            solutions</p>
-                        <span class="time_date"> 11:01 AM    |    June 9</span></div>
-                </div>
-            </div>
-            <div class="outgoing_msg">
-                <div class="sent_msg">
-                    <p>Test which is a new approach to have all
-                        solutions</p>
-                    <span class="time_date"> 11:01 AM    |    June 9</span></div>
-            </div>
-            <div class="incoming_msg">
-                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                   alt="sunil"></div>
-                <div class="received_msg">
-                    <div class="received_withd_msg">
-                        <p>Test, which is a new approach to have</p>
-                        <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-                </div>
-            </div>
-            <div class="outgoing_msg">
-                <div class="sent_msg">
-                    <p>Apollo University, Delhi, India Test</p>
-                    <span class="time_date"> 11:01 AM    |    Today</span></div>
-            </div>
-            <div class="incoming_msg">
-                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                   alt="sunil"></div>
-                <div class="received_msg">
-                    <div class="received_withd_msg">
-                        <p>We work directly with our designers and suppliers,
-                            and sell direct to you, which means quality, exclusive
-                            products, at a price anyone can afford.</p>
-                        <span class="time_date"> 11:01 AM    |    Today</span></div>
-                </div>
-            </div>
         </div>
         <div class="type_msg">
             <div class="input_msg_write">
-                <input type="text" id="input_msg" class="write_msg" placeholder="说吧......"/>
+                <input type="text" id="input_msg" class="write_msg" onkeypress="ApiWriteMessageIfKeyUp(event)"
+                       placeholder="说吧......"/>
                 <button class="msg_send_btn" type="button"
-                        onclick="ApiWriteMessage(document.getElementById('input_msg').value)">
+                        onclick="ApiWriteMessage(document.getElementById('input_msg').value);
+                        document.getElementById('input_msg').reset();">
                     <i class="fa fa-paper-plane-o"
                        aria-hidden="true"></i>
                 </button>
@@ -330,7 +292,19 @@
         return axios.get('/api/room/enter?rid=' + rid)
     }
 
+    function ApiWriteMessageIfKeyUp(event) {
+        console.log("key up:", event)
+        if (event.key === "Enter") {
+            var text = document.getElementById('input_msg').value
+            ApiWriteMessage(text)
+        }
+    }
+
     function ApiWriteMessage(text) {
+        if (text === "") {
+            return
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const rid = urlParams.get('rid');
         console.log("write msg:", text)
@@ -341,8 +315,17 @@
                 text: text
             }
         }).then(function () {
-            document.getElementById('input_msg').value = ""
-        })
+                var now = new Date().toLocaleString(); // 11/16/2015, 11:18:48 PM
+                $('.msg_history').append(
+                    '<div class="outgoing_msg">' +
+                    '<div class="sent_msg"> <p>' +
+                    text +
+                    '</p><span class="time_date">' +
+                    now +
+                    '</span></div> </div>')
+                document.getElementById('input_msg').value = ""
+            }
+        )
     }
 
     function ApiReadStatus() {
@@ -353,10 +336,24 @@
                 rid: rid,
             }
         }).then(function (response) {
-            document.getElementById('input_msg').value = ""
             var data = response.data.data;
             var chats = data.chats
             var ctl = data.control
+
+            if (chats !== null) {
+                for (const chat of chats) {
+                    console.log("ctim:", chat.Ctime)
+                    var cat = new Date(chat.Ctime * 1000).toLocaleString(); // 11/16/2015, 11:18:48 PM
+                    $('.msg_history').append(
+                        '  <div class="incoming_msg"> <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"alt="sunil"></div> ' +
+                        '  <div class="received_msg"> <div class="received_withd_msg"> <p>' +
+                        chat.Text +
+                        '</p> <span class="time_date">' +
+                        cat +
+                        '</span></div> </div> </div>'
+                    )
+                }
+            }
 
             // 不要自己改状态，又触发别人改了
             unlisten()
