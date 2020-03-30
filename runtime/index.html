@@ -258,8 +258,9 @@
 </div>
 
 <!-- 设置播放器容器 -->
-<video class="player" id="player-container-id" preload="auto" width="600" height="400" playsinline webkit-playsinline
-       x5-playsinline></video>
+<video class="player" id="player-container-id" preload="auto"
+       muted="muted" width="600" height="400"
+       playsinline webkit-playsinline x5-playsinline></video>
 <!--
 注意事项：
 * 播放器容器必须为 video 标签
@@ -273,26 +274,53 @@
         /**player-container-id 为播放器容器ID，必须与html中一致*/
         fileID: "5285890800596505413", /**请传入需要播放的视频fileID 必须 */
         appID: "1254217685", /**请传入点播账号的appID 必须 */
+        autoplay: true,
         /**其他参数请在开发文档中查看 */
     });
     player.error(function (err) {
         console.log("player.err :", err)
     });
-    player.on("play", function (event) {
-        console.log("onplay: ", event)
-        var at = player.currentTime()
-        ApiWriteCtrl(at, "play");
-    });
-    player.on("pause", function (event) {
-        var at = player.currentTime();
-        ApiWriteCtrl(at, "pause");
-        console.log("onpause: ", event)
-    });
-    player.on("seeked", function (event) {
-        console.log("onseeked: ", event)
-        var at = player.currentTime();
-        ApiWriteCtrl(at, "jump");
-    });
+    listen();
+    self.setInterval("read()", 2000);
+
+    // 设置播放器的时间，并且不触发seeked
+    function setPlayerOffset(offset) {
+        player.currentTime(off);
+    }
+
+    function listen() {
+        player.on("play", play)
+        player.on("pause", pause)
+        player.on("seeked", seek)
+    }
+
+    function unlisten() {
+        player.off("play", play)
+        player.off("pause", pause)
+        player.off("seeked", seek)
+    }
+
+    function play(event) {
+        console.log("event in play,\t", event)
+        var offset = player.currentTime()
+        ApiWriteCtrl(offset, "play");
+    }
+
+    function pause(event) {
+        console.log("event in pause,\t", event)
+        var offset = player.currentTime()
+        ApiWriteCtrl(offset, "pause");
+    }
+
+    function seek(event) {
+        // console.log("event in seek,\t", event)
+        // var offset = player.currentTime()
+        // ApiWriteCtrl(offset, "jump");
+    }
+
+    function read() {
+        ApiReadStatus()
+    }
 
     function ok(response) {
         return response.data.code == 0;
@@ -314,6 +342,45 @@
             }
         }).then(function () {
             document.getElementById('input_msg').value = ""
+        })
+    }
+
+    function ApiReadStatus() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const rid = urlParams.get('rid');
+        return axios.get('/api/room/status/read', {
+            params: {
+                rid: rid,
+            }
+        }).then(function (response) {
+            document.getElementById('input_msg').value = ""
+            var data = response.data.data;
+            var chats = data.chats
+            var ctl = data.control
+
+            // 不要自己改状态，又触发别人改了
+            unlisten()
+            if (ctl != null) {
+                console.log("ctl action:\t", ctl)
+                console.log("ctl action:\t", ctl.Action)
+                switch (ctl.Action) {
+                    case "play":
+                        player.currentTime(ctl.Offset);
+                        player.play()
+                        break
+                    case "pause":
+                        player.currentTime(ctl.Offset);
+                        player.pause()
+                        break
+                    case "jump":
+                        player.currentTime(ctl.Offset);
+                        // player.play()
+                        break
+                    default:
+                        console.log("unknown action, ", ctl.action)
+                }
+            }
+            listen()
         })
     }
 

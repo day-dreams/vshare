@@ -47,7 +47,7 @@ type status struct {
 	Clients []*Client
 
 	// 消息列表
-	Msgs []*message
+	msgs []*message
 
 	// 当前进度
 	Current int    // todo 需要一个主从机制 需要有人来同步这个状态，让新进来的人能够自动播放
@@ -85,7 +85,7 @@ func setupRoom() {
 			Video: vid2video[vid],
 			Status: &status{
 				Clients: nil,
-				Msgs:    nil,
+				msgs:    nil,
 				Current: 0,
 			},
 		}
@@ -182,12 +182,15 @@ func StatusRead() gin.HandlerFunc {
 		param.Rid = c.Query("rid")
 		param.Cid = CidFromCookie(c)
 
-		fmt.Printf("param:%s\n", utils.ToPrettyJSON(param))
+		// fmt.Printf("param:%s\n", utils.ToPrettyJSON(param))
 		if err := utils.Validate(&param); err != nil {
 			utils.GinJson(c, nil, err)
 			return
 		}
 		param.Cid = CidFromCookie(c)
+
+		mutex.Lock()
+		defer mutex.Unlock()
 
 		client, ok := cid2client[param.Cid]
 		if !ok {
@@ -195,15 +198,13 @@ func StatusRead() gin.HandlerFunc {
 			return
 		}
 
-		mutex.Lock()
-		defer mutex.Unlock()
-
 		var (
-			msgs    = client.Box
+			msgs    []*message
 			ret     = map[string]interface{}{}
 			chats   []*message
 			control *message
 		)
+		msgs = append(msgs, client.Box...)
 		client.Box = nil
 		for _, msg := range msgs {
 			if msg.Action == chat {
@@ -249,6 +250,9 @@ func StatusWrite() gin.HandlerFunc {
 			return
 		}
 
+		mutex.Lock()
+		defer mutex.Unlock()
+
 		room, ok := rid2room[param.Rid]
 		if !ok {
 			utils.GinJson(c, nil, utils.ErrParam("rid不存在"))
@@ -260,8 +264,6 @@ func StatusWrite() gin.HandlerFunc {
 			return
 		}
 
-		mutex.Lock()
-		defer mutex.Unlock()
 		ctime := time.Now().Unix()
 		switch param.Action {
 		case chat:
@@ -277,7 +279,7 @@ func StatusWrite() gin.HandlerFunc {
 					client.Box = append(client.Box, msg)
 				}
 			}
-			room.Status.Msgs = append(room.Status.Msgs, msg)
+			room.Status.msgs = append(room.Status.msgs, msg)
 		case pause:
 			room.Status.State = pause
 			room.Status.Current = param.At
@@ -303,6 +305,7 @@ func StatusWrite() gin.HandlerFunc {
 			}
 			for _, client := range room.Status.Clients {
 				if client.Cid != param.Cid {
+					fmt.Printf("write msg:  %s -> %s,%+v\n", client.Cid, param.Cid, msg)
 					client.Box = append(client.Box, msg)
 				}
 			}

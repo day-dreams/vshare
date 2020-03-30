@@ -10,7 +10,9 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+
 	r.GET("/", func(c *gin.Context) {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", utils.Index())
 	})
