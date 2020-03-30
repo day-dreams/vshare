@@ -165,6 +165,7 @@ func RoomEnter() gin.HandlerFunc {
 			"online": len(room.Status.Clients),
 			"cid":    cid,
 			"at":     room.Status.Current,
+			"vid":    room.VID,
 		}
 		utils.GinJson(c, data, nil)
 	}

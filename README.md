@@ -5,4 +5,5 @@
 - 如何开启新房间
     - 如果要看新视频，先传到腾讯云
     - runtime/config.json，添加相关的room/vid信息
+    - 重启之`make daemon`
     - 电脑浏览器访问，url带上query param，`rid=xxxx`即可

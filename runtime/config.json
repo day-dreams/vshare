@@ -1,7 +1,7 @@
 {
   "videos": [
     {
-      "vid": "PleaseAnswer1988_01",
+      "vid": "5285890800596505413",
       "vtitle": "测试视频",
       "vdesc": "测试用的",
       "tcloud": {
@@ -13,7 +13,7 @@
   "rooms": [
     {
       "rid": "youandme",
-      "vid": "PleaseAnswer1988_01"
+      "vid": "5285890800596505413"
     }
   ]
 }

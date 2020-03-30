@@ -233,11 +233,6 @@
 <script>
     var player = TCPlayer("player-container-id", {
         // https://cloud.tencent.com/document/product/266/14424
-        /**player-container-id 为播放器容器ID，必须与html中一致*/
-        fileID: "5285890800596505413", /**请传入需要播放的视频fileID 必须 */
-        appID: "1254217685", /**请传入点播账号的appID 必须 */
-        autoplay: true,
-        /**其他参数请在开发文档中查看 */
     });
     player.error(function (err) {
         console.log("player.err :", err)
@@ -398,15 +393,16 @@
         const rid = urlParams.get('rid');
         ApiEnterRoom(rid).then(function (res) {
             var data = res.data;
-            console.log("enter room:\t", data)
             player.currentTime(data.data.at);
+            player.loadVideoByID({
+                fileID: data.data.vid,
+                appID: '1254217685', // 请传入点播账号的 appID（必须）
+            });
         }).catch(function (err) {
             console.log("err    ", err)
         });
     })
 
-    // todo setup ws connection
-    // todo listen msg_send_btn
 </script>
 </body>
 </html>
