@@ -190,7 +190,7 @@
         }
 
         .msg_history {
-            height: 500px;
+            height: 200px;
             width: 100%;
             overflow-y: auto;
         }
@@ -308,14 +308,11 @@
                 text: text
             }
         }).then(function () {
-                var now = new Date().toLocaleString(); // 11/16/2015, 11:18:48 PM
                 $('.msg_history').append(
                     '<div class="outgoing_msg">' +
                     '<div class="sent_msg"> <p>' +
                     text +
-                    '</p><span class="time_date">' +
-                    now +
-                    '</span></div> </div>')
+                    '</p></div>')
                 document.getElementById('input_msg').value = ""
                 scrollToBottom()
             }
@@ -342,14 +339,11 @@
             if (chats !== null) {
                 for (const chat of chats) {
                     console.log("ctim:", chat.Ctime)
-                    var cat = new Date(chat.Ctime * 1000).toLocaleString(); // 11/16/2015, 11:18:48 PM
                     $('.msg_history').append(
                         '  <div class="incoming_msg"> <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"alt="sunil"></div> ' +
                         '  <div class="received_msg"> <div class="received_withd_msg"> <p>' +
                         chat.Text +
-                        '</p> <span class="time_date">' +
-                        cat +
-                        '</span></div> </div> </div>'
+                        '</p> </div>'
                     )
                 }
                 scrollToBottom()
