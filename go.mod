@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/gin-gonic/gin v1.6.2
 	github.com/go-playground/validator/v10 v10.2.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/tidwall/gjson v1.6.0

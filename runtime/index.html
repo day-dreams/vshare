@@ -35,21 +35,20 @@
         }
 
         .player {
-            width: 1080px;
-            height: 800px;
-            top: 100px;
-            left: 150px;
+            width: 80%;
+            height: 100%;
+            left: 0%;
+            position: fixed;
         }
 
         .inbox_msg {
             border: 1px solid #c4c4c4;
             clear: both;
             overflow: hidden;
-            width: 450px;
-            height: 600px;
+            width: 20%;
+            height: 100%;
             position: fixed;
-            top: 130px;
-            right: 100px;
+            right: 0%;
         }
 
 
@@ -167,7 +166,9 @@
 
         .type_msg {
             border-top: 1px solid #c4c4c4;
-            position: relative;
+            position: fixed;
+            width: 18%;
+            bottom: 5%;
         }
 
         .msg_send_btn {
@@ -189,8 +190,11 @@
         }
 
         .msg_history {
-            height: 516px;
-            overflow-y: auto;
+            /*height: 516px;*/
+            /*overflow-y: auto;*/
+            position: fixed;
+            width: 18%;
+            top: 0%;
         }
     </style>
 </head>
@@ -242,8 +246,11 @@
         </div>
         <div class="type_msg">
             <div class="input_msg_write">
-                <input type="text" class="write_msg" placeholder="说吧......"/>
-                <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                <input type="text" id="input_msg" class="write_msg" placeholder="说吧......"/>
+                <button class="msg_send_btn" type="button"
+                        onclick="ApiWriteMessage(document.getElementById('input_msg').value)">
+                    <i class="fa fa-paper-plane-o"
+                       aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -271,27 +278,64 @@
     player.error(function (err) {
         console.log("player.err :", err)
     });
+    player.on("play", function (event) {
+        console.log("onplay: ", event)
+        var at = player.currentTime()
+        ApiWriteCtrl(at, "play");
+    });
+    player.on("pause", function (event) {
+        var at = player.currentTime();
+        ApiWriteCtrl(at, "pause");
+        console.log("onpause: ", event)
+    });
+    player.on("seeked", function (event) {
+        console.log("onseeked: ", event)
+        var at = player.currentTime();
+        ApiWriteCtrl(at, "jump");
+    });
 
     function ok(response) {
         return response.data.code == 0;
     }
 
+    function ApiEnterRoom(rid) {
+        return axios.get('/api/room/enter?rid=' + rid)
+    }
+
+    function ApiWriteMessage(text) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const rid = urlParams.get('rid');
+        console.log("write msg:", text)
+        return axios.get('/api/room/status/write', {
+            params: {
+                rid: rid,
+                action: "chat",
+                text: text
+            }
+        }).then(function () {
+            document.getElementById('input_msg').value = ""
+        })
+    }
+
+    function ApiWriteCtrl(at, action) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const rid = urlParams.get('rid');
+        return axios.get('/api/room/status/write', {
+            params: {
+                rid: rid,
+                action: action,
+                at: at,
+            }
+        })
+    }
+
     $(document).ready(function RoomInfo() {
         const urlParams = new URLSearchParams(window.location.search);
         const rid = urlParams.get('rid');
-        axios.get('/api/room/info', {
-            params: {
-                rid: rid
-            }
-        }).then(function (res) {
-            if (ok(res)) {
-                console.log("res    ", res);
-                console.log("player inside:", player);
-                player.currentTime(120);
-                // todo pull chat history from ws
-            } else {
-                console.log("res err", res);
-            }
+        ApiEnterRoom(rid).then(function (res) {
+            var data = res.data;
+            console.log("enter room:\t", data)
+            player.currentTime(data.data.at);
         }).catch(function (err) {
             console.log("err    ", err)
         });

@@ -164,6 +164,7 @@ func RoomEnter() gin.HandlerFunc {
 		data := map[string]interface{}{
 			"online": len(room.Status.Clients),
 			"cid":    cid,
+			"at":     room.Status.Current,
 		}
 		utils.GinJson(c, data, nil)
 	}
@@ -228,8 +229,8 @@ type paramWriteStatus struct {
 }
 
 func atoi(src string) int {
-	rv, _ := strconv.Atoi(src)
-	return rv
+	rv, _ := strconv.ParseFloat(src, 64)
+	return int(rv)
 }
 
 func StatusWrite() gin.HandlerFunc {
@@ -272,7 +273,9 @@ func StatusWrite() gin.HandlerFunc {
 				Offset: 0,
 			}
 			for _, client := range room.Status.Clients {
-				client.Box = append(client.Box, msg)
+				if client.Cid != param.Cid {
+					client.Box = append(client.Box, msg)
+				}
 			}
 			room.Status.Msgs = append(room.Status.Msgs, msg)
 		case pause:
@@ -285,19 +288,23 @@ func StatusWrite() gin.HandlerFunc {
 				Offset: param.At,
 			}
 			for _, client := range room.Status.Clients {
-				client.Box = append(client.Box, msg)
+				if client.Cid != param.Cid {
+					client.Box = append(client.Box, msg)
+				}
 			}
 		case play:
 			room.Status.State = play
 			room.Status.Current = param.At
 			msg := &message{
-				Action: pause,
+				Action: play,
 				Ctime:  ctime,
 				From:   sclient.Cid,
 				Offset: param.At,
 			}
 			for _, client := range room.Status.Clients {
-				client.Box = append(client.Box, msg)
+				if client.Cid != param.Cid {
+					client.Box = append(client.Box, msg)
+				}
 			}
 		case jump:
 			room.Status.State = play
@@ -309,7 +316,9 @@ func StatusWrite() gin.HandlerFunc {
 				Offset: param.At,
 			}
 			for _, client := range room.Status.Clients {
-				client.Box = append(client.Box, msg)
+				if client.Cid != param.Cid {
+					client.Box = append(client.Box, msg)
+				}
 			}
 		default:
 			utils.GinJson(c, nil, utils.ErrParam("action wrong"))
