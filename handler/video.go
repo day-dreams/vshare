@@ -17,6 +17,10 @@ type video struct {
 		AppId  string
 		FileId string
 	}
+	Hls struct {
+		M3u8  string
+		TsDir string
+	}
 }
 
 var (
@@ -38,6 +42,8 @@ func setupVideo() {
 		vdesc := value.Get("vdesc").String()
 		fileid := value.Get("tcloud").Get("fileid").String()
 		appid := value.Get("tcloud").Get("appid").String()
+		m3u8 := value.Get("hls").Get("m3u8").String()
+		tsdir := value.Get("hls").Get("tsdir").String()
 		v := video{
 			VID:   vid,
 			Title: vtitle,
@@ -46,6 +52,10 @@ func setupVideo() {
 				AppId  string
 				FileId string
 			}{AppId: appid, FileId: fileid},
+			Hls: struct {
+				M3u8  string
+				TsDir string
+			}{M3u8: m3u8, TsDir: tsdir},
 		}
 		videos = append(videos, v)
 		vid2video[vid] = v
