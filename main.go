@@ -1,12 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/location"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/day-dreams/vshare.zhangnan.xyz/handler"
@@ -16,10 +15,12 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
-	r.Use(location.Default())
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
 	}))
+	r.Use(func(c *gin.Context) {
+		fmt.Printf("cookies:[%+v]\n", c.Request.Cookies())
+	})
 
 	r.GET("/", func(c *gin.Context) {
 		c.Data(http.StatusOK, "text/html; charset=utf-8", utils.Index())

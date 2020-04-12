@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"path/filepath"
 	"strconv"
 	"strings"
 
-	"github.com/gin-contrib/location"
 	"github.com/gin-gonic/gin"
 
 	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
@@ -36,13 +34,13 @@ type m3u8 struct {
 	tags []tag
 }
 
-func (m *m3u8) ToHttpBody(vid string, url *url.URL) string {
+func (m *m3u8) ToHttpBody(vid string) string {
 	body := ""
 	for _, tag := range m.tags {
 		if tag.IsEXTINF() {
 			// format as http uri
 			uri := tag.GetEXTINFUri()
-			uri = fmt.Sprintf("%s://%s/api/play/m3u8/ts?vid=%s&tsname=%s", url.Scheme, url.Host, vid, uri)
+			uri = fmt.Sprintf("http://vshare.zhangnan.xyz/api/play/m3u8/ts?vid=%s&tsname=%s", vid, uri)
 			tag.SetEXTINFUri(uri)
 		}
 		body += "#" + tag.payload
@@ -68,7 +66,6 @@ func newM3u8ByFile(path string) (*m3u8, error) {
 func M3u8PlayList() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		url := location.Get(c)
 		param := ParamM3u8TsFile{
 			Vid: c.Query("vid"),
 		}
@@ -87,7 +84,7 @@ func M3u8PlayList() gin.HandlerFunc {
 		}
 
 		c.Writer.Header().Set("Content-Type", "application/vnd.apple.mpegurl")
-		body := m.ToHttpBody(param.Vid, url)
+		body := m.ToHttpBody(param.Vid)
 		c.Writer.Header().Set("Content-Length", strconv.Itoa(len(body)))
 		c.Writer.WriteHeader(http.StatusOK)
 		_, _ = c.Writer.Write([]byte(body))
