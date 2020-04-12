@@ -32,5 +32,10 @@ func main() {
 	r.GET("/api/play/m3u8/playlist", handler.M3u8PlayList())
 	r.GET("/api/play/m3u8/ts", handler.M3u8TsFile())
 
-	r.Run(os.Getenv("addr")) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	addr := os.Getenv("addr")
+	if addr == "" {
+		r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	} else {
+		r.Run(addr) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	}
 }
