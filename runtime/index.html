@@ -6,19 +6,6 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
     <title>vshare.zhangnan.xyz</title>
-    <!-- 引入播放器 css 文件 -->
-    <link href="//imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.css" rel="stylesheet">
-    <!-- 如需在IE8、9浏览器中初始化播放器，浏览器需支持Flash并在页面中引入 -->
-    <!--[if lt IE 9]>
-    <script src="//imgcache.qq.com/open/qcloud/video/tcplayer/ie8/videojs-ie8.js"></script>
-    <![endif]-->
-    <!-- 如果需要在 Chrome Firefox 等现代浏览器中通过H5播放hls，需要引入 hls.js -->
-    <script src="//imgcache.qq.com/open/qcloud/video/tcplayer/libs/hls.min.0.12.4.js"></script>
-    <!-- 引入播放器 js 文件 -->
-    <script src="//imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.v4.min.js"></script>
-    <!-- 示例 CSS 样式可自行删除 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
@@ -29,15 +16,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    <script src="https://vjs.zencdn.net/7.7.5/video.js"></script>
+    <link href="https://vjs.zencdn.net/7.7.5/video-js.css" rel="stylesheet"/>
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
     <style>
         img {
             max-width: 100%;
         }
 
-        .player {
+        .video-js {
             width: 80%;
             height: 100%;
-            left: 0%;
+            bottom: 1%;
             position: fixed;
         }
 
@@ -218,9 +209,22 @@
 </div>
 
 <!-- 设置播放器容器 -->
-<video class="player" id="player-container-id" preload="auto"
-       muted="muted" width="600" height="400"
-       playsinline webkit-playsinline x5-playsinline></video>
+<video
+        id="my-video"
+        class="video-js"
+        preload="auto"
+        width="600" height="400"
+        autoplay="true"
+        controls
+>
+    <p class="vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank">
+            supports HTML5 video
+        </a>
+    </p>
+</video>
 <!--
 注意事项：
 * 播放器容器必须为 video 标签
@@ -229,12 +233,7 @@
 * playsinline webkit-playsinline x5-playsinline 这几个属性是为了在标准移动端浏览器不劫持视频播放的情况下实现行内播放，此处仅作示例，请按需使用
 -->
 <script>
-    var player = TCPlayer("player-container-id", {
-        // https://cloud.tencent.com/document/product/266/14424
-    });
-    player.error(function (err) {
-        console.log("player.err :", err)
-    });
+    var player = videojs('my-video');
     listen();
     self.setInterval("read()", 2000);
 
@@ -392,11 +391,11 @@
         const rid = urlParams.get('rid');
         ApiEnterRoom(rid).then(function (res) {
             var data = res.data;
+            player.src({
+                src: "/api/play/m3u8/playlist?vid=" + data.data.vid,
+                type: "application/x-mpegURL",
+            })
             player.currentTime(data.data.at);
-            player.loadVideoByID({
-                fileID: data.data.vid,
-                appID: '1254217685', // 请传入点播账号的 appID（必须）
-            });
         }).catch(function (err) {
             console.log("err    ", err)
         });
