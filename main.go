@@ -5,27 +5,23 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	"github.com/day-dreams/vshare.zhangnan.xyz/config"
+	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
 )
 
 func main() {
-	// gin.SetMode(gin.ReleaseMode)
+	config.InitConfig()
 	r := gin.New()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
 	}))
-	// r.Use(func(c *gin.Context) {
-	// 	fmt.Printf("cookies:[%+v]\n", c.Request.Cookies())
-	// })
 
-	// r.GET("/", func(c *gin.Context) {
-	// 	c.Data(http.StatusOK, "text/html; charset=utf-8", utils.Index())
-	// })
-	// r.GET("/api/video/list", handler.VideoList())
-	// r.GET("/api/room/enter", handler.RoomEnter())
-	// r.GET("/api/room/status/read", handler.StatusRead())
-	// r.GET("/api/room/status/write", handler.StatusWrite())
-	// r.GET("/api/play/m3u8/playlist", handler.M3u8PlayList())
-	// r.GET("/api/play/m3u8/ts", handler.M3u8TsFile())
+	r.GET("/version", func(c *gin.Context) {
+		utils.GinJson(c, map[string]interface{}{
+			"version": config.GetString("version"),
+		}, nil)
+	})
 
 	addr := os.Getenv("addr")
 	r.Run(addr) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
