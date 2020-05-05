@@ -9,3 +9,6 @@
     - 重启之`make daemon`
     - 电脑浏览器访问，url带上query param，`rid=xxxx`即可
 - 编译运行，`make docker`
+
+- Reference
+    - HLS标准，https://www.rfc-editor.org/pdfrfc/rfc8216.txt.pdf

@@ -8,6 +8,7 @@ import (
 
 	"github.com/day-dreams/vshare.zhangnan.xyz/bootstrap"
 	"github.com/day-dreams/vshare.zhangnan.xyz/config"
+	"github.com/day-dreams/vshare.zhangnan.xyz/handler"
 	"github.com/day-dreams/vshare.zhangnan.xyz/service"
 	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
 )
@@ -30,6 +31,8 @@ func main() {
 		info, err := service.VideoInfoGet(c, "/data/huojianshaonv101.MP4")
 		utils.GinJson(c, info, err)
 	})
+	r.GET("/api/video/hls/playlist", handler.M3u8PlayList())
+	// r.GET("/api/video/hls/segment", handler.M3u8PlayList())
 
 	addr := os.Getenv("addr")
 	r.Run(addr) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

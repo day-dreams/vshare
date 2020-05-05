@@ -20,5 +20,5 @@ func GetString(key string) string {
 	return viper.GetString(key)
 }
 func GetInt(key string) int {
-	return 0
+	return viper.GetInt(key)
 }
