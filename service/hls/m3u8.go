@@ -41,7 +41,7 @@ func M3u8PlayList(ctx context.Context, req *ReqM3u8PlayList) (*ResM3u8PlayList, 
 	cur := 0
 
 	// header + play list
-	res.PlayListContent += fmt.Sprintf("#EXTM3U\n#EXT-X-TARGETDURATION:%d\n", DPB)
+	res.PlayListContent += fmt.Sprintf("#EXTM3U\n#EXT-X-TARGETDURATION:%d\n#EXT-X-MEDIA-SEQUENCE:0\n#EXT-X-PLAYLIST-TYPE:VOD\n\n", DPB)
 	for ; float64(cur*DPB) <= total; cur += 1 {
 		duration := float64(DPB)
 		if float64(cur*DPB)+duration > total {
@@ -63,7 +63,6 @@ type ResM3u8Segment struct {
 
 func M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, error) {
 
-	utils.Logger().Debugf("......")
 	vInfo, err := service.VideoInfoGet(ctx, GetVidPath(req.Vid))
 	if err != nil {
 		return nil, err
@@ -89,7 +88,7 @@ func M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, err
 	}
 
 	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
-	utils.Logger().Debug(cmd.String())
+	// utils.Logger().Debug(cmd.String())
 
 	segment, err := cmd.Output()
 	if err != nil {

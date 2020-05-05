@@ -28,7 +28,7 @@ func VideoInfoGet(ctx context.Context, path string) (*VideoInfo, error) {
 		return nil, err
 	} else {
 
-		utils.Logger().Debugf("data: %s ", string(bytes))
+		// utils.Logger().Debugf("data: %s ", string(bytes))
 		ret := &VideoInfo{}
 
 		duration := gjson.Get(string(bytes), "format.duration").String()

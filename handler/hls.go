@@ -36,14 +36,11 @@ func M3u8PlayList() gin.HandlerFunc {
 
 func M3u8Segment() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		utils.Logger().Debugf("......")
 		req := &hls.ReqM3u8Segment{
 			Vid:   c.Query("vid"),
 			Index: 0,
 		}
-		utils.Logger().Debugf("......")
 		index, err := strconv.Atoi(c.Query("segment"))
-		utils.Logger().Debugf("......")
 		if err != nil {
 			utils.GinJson(c, nil, err)
 			return

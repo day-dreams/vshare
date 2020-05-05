@@ -16,6 +16,7 @@ func main() {
 	bootstrap.Bootstrap()
 
 	r := gin.New()
+	r.Use(gin.Logger())
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
 	}))
