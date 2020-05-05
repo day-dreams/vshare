@@ -17,4 +17,7 @@ daemon: build
 buildLinux:
 	GOOS=linux GOARCH=amd64 go build -o build/VShareServer main.go
 docker: buildLinux
-	docker run -p 8080:8080 --rm -it `docker build -q .`
+	docker run \
+	-p 8080:8080 \
+	-v ~/Desktop:/data \
+	--rm -it `docker build -q .`
