@@ -32,7 +32,7 @@ func main() {
 		utils.GinJson(c, info, err)
 	})
 	r.GET("/api/video/hls/playlist", handler.M3u8PlayList())
-	// r.GET("/api/video/hls/segment", handler.M3u8PlayList())
+	r.GET("/api/video/hls/segment", handler.M3u8Segment())
 
 	addr := os.Getenv("addr")
 	r.Run(addr) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

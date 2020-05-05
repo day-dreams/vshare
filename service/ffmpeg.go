@@ -13,6 +13,7 @@ import (
 type VideoInfo struct {
 	Duration float64
 	Size     uint64
+	Path     string // 视频文件地址
 }
 
 func VideoInfoGet(ctx context.Context, path string) (*VideoInfo, error) {
@@ -43,6 +44,8 @@ func VideoInfoGet(ctx context.Context, path string) (*VideoInfo, error) {
 			utils.Logger().Errorf("strconv.ParseFloat failed. %v", err)
 			return nil, err
 		}
+
+		ret.Path = path
 		return ret, nil
 	}
 

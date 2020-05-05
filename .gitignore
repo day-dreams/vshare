@@ -9,3 +9,4 @@ build
 *.test
 .vscode
 .idea
+*.ts

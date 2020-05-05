@@ -5,6 +5,5 @@ RUN ffmpeg -version
 RUN apt install -y tree
 
 ADD build build
-ADD runtime runtime
 #ENTRYPOINT pwd && ls && tree
 ENTRYPOINT addr=0.0.0.0:8080 config=./build/config.json ./build/VShareServer
