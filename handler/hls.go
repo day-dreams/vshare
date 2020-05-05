@@ -5,10 +5,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/day-dreams/vshare.zhangnan.xyz/service"
 	"github.com/day-dreams/vshare.zhangnan.xyz/service/hls"
 	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
 )
 
+func VideoInfoDemo() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		info, err := service.VideoInfoGet(c, "/data/huojianshaonv101.MP4")
+		utils.GinJson(c, info, err)
+	}
+}
 func M3u8PlayList() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		req := &hls.ReqM3u8PlayList{
