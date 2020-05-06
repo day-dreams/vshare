@@ -16,8 +16,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
-    <link href="https://vjs.zencdn.net/7.3.0/video-js.min.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/7.3.0/video.min.js"></script>
+    <link href="https://vjs.zencdn.net/7.7.5/video-js.css" rel="stylesheet"/>
+    <script src="https://vjs.zencdn.net/7.7.5/video.js"></script>
+
     <style>
         img {
             max-width: 100%;
@@ -214,18 +215,20 @@
         autoplay="true"
         controls
 >
+    <source src="/api/video/hls/playlist?vid=1988_01" type="application/x-mpegURL"/>
+    <p class="vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank"
+        >supports HTML5 video</a
+        >
+    </p>
 </video>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const vid = urlParams.get('vid');
-    const player = videojs('my-video', {
-        src: {
-            src: '/api/video/hls/playlist?vid=' + vid,
-            type: 'video/mp4'
-        },
-        liveui: true,
-    });
+    var player = videojs('my-video');
 </script>
 </body>
 </html>
