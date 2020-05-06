@@ -5,7 +5,7 @@ coverage.data
 coverage.html
 client
 vendor
-build
+build/VShareServer
 *.test
 .vscode
 .idea
