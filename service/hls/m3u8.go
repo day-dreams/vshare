@@ -69,7 +69,7 @@ func M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, err
 		return nil, err
 	}
 	startAt := req.Index * GetDPB()
-	resolution := 720 // 720p todo 动态码率？
+	resolution := 1080 // todo 动态码率？
 	pipe := "pipe:out%03d.ts"
 	args := []string{
 		"-timelimit", "45",
