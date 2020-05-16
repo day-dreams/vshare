@@ -215,7 +215,7 @@
         autoplay="true"
         controls
 >
-    <source src="/api/video/hls/playlist?vid=1988_01" type="application/x-mpegURL"/>
+    {{/*    <source src="/api/video/hls/playlist?vid=1988_01" type="application/x-mpegURL"/>*/}}
     <p class="vjs-no-js">
         To view this video please enable JavaScript, and consider upgrading to a
         web browser that
@@ -229,6 +229,10 @@
     const urlParams = new URLSearchParams(window.location.search);
     const vid = urlParams.get('vid');
     var player = videojs('my-video');
+    player.src({
+        type: "application/x-mpegURL",
+        src: "/api/video/hls/playlist?vid=" + vid
+    })
 </script>
 </body>
 </html>

@@ -14,6 +14,8 @@ daemon: build
 	&> ./build/vshare.log &
 buildLinux:
 	GOOS=linux GOARCH=amd64 go build -o build/VShareServer main.go
+docker-compose: buildLinux
+	docker-compose up --build --force-recreate
 docker: buildLinux
 	docker run \
 	-p 8080:8080 \

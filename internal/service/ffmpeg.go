@@ -24,7 +24,7 @@ func VideoInfoGet(ctx context.Context, path string) (*VideoInfo, error) {
 		"-show_format", path)
 
 	if bytes, err := cmd.Output(); err != nil {
-		utils.Logger().Errorf("cmd.Output() failed. %v", err)
+		utils.Logger().Errorf("cmd.Output() failed. %v,[%s]", err, cmd.String())
 		return nil, err
 	} else {
 
