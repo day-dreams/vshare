@@ -1,4 +1,6 @@
 # vshare.zhangnan.xyz
+![CI](https://github.com/day-dreams/vshare.zhangnan.xyz/workflows/CI/badge.svg?branch=master)
+
 视频分享/同步观看
 
 
