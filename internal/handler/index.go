@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/day-dreams/vshare.zhangnan.xyz/config"
-	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/config"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
 )
 
 func Index() gin.HandlerFunc {

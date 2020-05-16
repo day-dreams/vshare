@@ -7,7 +7,7 @@ import (
 
 	"github.com/tidwall/gjson"
 
-	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
 )
 
 type VideoInfo struct {

@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/day-dreams/vshare.zhangnan.xyz/service"
-	"github.com/day-dreams/vshare.zhangnan.xyz/service/hls"
-	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/service"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/service/hls"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
 )
 
 func VideoInfoDemo() gin.HandlerFunc {

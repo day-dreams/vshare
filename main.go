@@ -6,10 +6,10 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/day-dreams/vshare.zhangnan.xyz/bootstrap"
-	"github.com/day-dreams/vshare.zhangnan.xyz/config"
-	"github.com/day-dreams/vshare.zhangnan.xyz/handler"
-	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/bootstrap"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/config"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/handler"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
 )
 
 func main() {

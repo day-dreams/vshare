@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/day-dreams/vshare.zhangnan.xyz/config"
-	"github.com/day-dreams/vshare.zhangnan.xyz/service"
-	"github.com/day-dreams/vshare.zhangnan.xyz/utils"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/config"
+	service2 "github.com/day-dreams/vshare.zhangnan.xyz/internal/service"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
 )
 
 type ReqM3u8PlayList struct {
@@ -30,7 +30,7 @@ func GetVidPath(vid string) string {
 func M3u8PlayList(ctx context.Context, req *ReqM3u8PlayList) (*ResM3u8PlayList, error) {
 
 	path := GetVidPath(req.Vid)
-	vInfo, err := service.VideoInfoGet(ctx, path)
+	vInfo, err := service2.VideoInfoGet(ctx, path)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ type ResM3u8Segment struct {
 
 func M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, error) {
 
-	vInfo, err := service.VideoInfoGet(ctx, GetVidPath(req.Vid))
+	vInfo, err := service2.VideoInfoGet(ctx, GetVidPath(req.Vid))
 	if err != nil {
 		return nil, err
 	}
