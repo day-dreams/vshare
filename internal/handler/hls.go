@@ -12,7 +12,7 @@ import (
 
 func VideoInfoDemo() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		info, err := service.VideoInfoGet(c, "/data/huojianshaonv101.MP4")
+		info, err := service.VideoInfoGet(c, "/data/vmoon/detachment.mkv")
 		utils.GinJson(c, info, err)
 	}
 }
@@ -23,7 +23,9 @@ func M3u8PlayList() gin.HandlerFunc {
 			Path: "/api/video/hls/segment",
 		}
 
-		res, err := hls.M3u8PlayList(c, req)
+		loader := hls.LiveFfmpegLoader{}
+
+		res, err := loader.M3u8PlayList(c, req)
 		if err != nil {
 			utils.GinJson(c, nil, err)
 			return
@@ -47,7 +49,7 @@ func M3u8Segment() gin.HandlerFunc {
 		}
 		req.Index = index
 
-		loader := hls.LoaderLive{}
+		loader := hls.LiveFfmpegLoader{}
 		res, err := loader.M3u8Segment(c, req)
 		if err != nil {
 			utils.GinJson(c, nil, err)

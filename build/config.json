@@ -6,7 +6,12 @@
   },
   "videos": {
     "demovid": {
-      "path": "/data/1988/1988.20.mp4"
+      "path": "/data/1988/1988.20.mp4",
+      "m3u8dir": "/data/1988/1988.20"
+    },
+    "debugvid": {
+      "path": "/data/vmoon/detachment.mkv",
+      "m3u8dir": "/data/vmoon/detachment/1080.960/"
     }
   }
 }

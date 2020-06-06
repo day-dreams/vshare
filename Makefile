@@ -19,5 +19,5 @@ docker-compose: buildLinux
 docker: buildLinux
 	docker run \
 	-p 8080:8080 \
-	-v ~/Desktop:/data \
+	-v /var/docker/public:/data/vmoon \
 	--rm -it `docker build -q .`
