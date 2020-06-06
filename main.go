@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/day-dreams/vshare.zhangnan.xyz/internal/bootstrap"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/cgi"
 	"github.com/day-dreams/vshare.zhangnan.xyz/internal/config"
-	"github.com/day-dreams/vshare.zhangnan.xyz/internal/handler"
 	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
 )
 
@@ -27,10 +27,10 @@ func main() {
 		}, nil)
 	})
 
-	r.GET("/", handler.Index())
-	r.GET("/api/video/info/demo", handler.VideoInfoDemo())
-	r.GET("/api/video/hls/playlist", handler.M3u8PlayList())
-	r.GET("/api/video/hls/segment", handler.M3u8Segment())
+	r.GET("/", cgi.Index())
+	r.GET("/api/video/info/demo", cgi.VideoInfoDemo())
+	r.GET("/api/video/hls/playlist", cgi.M3u8PlayList())
+	r.GET("/api/video/hls/segment", cgi.M3u8Segment())
 
 	addr := os.Getenv("addr")
 	r.Run(addr) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

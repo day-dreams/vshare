@@ -14,7 +14,6 @@ type VideoInfo struct {
 	Duration float64
 	Size     uint64
 	Path     string // 原始视频文件地址
-	M3u8Dir  string // ffmpeg处理过m3u8文件目录
 }
 
 func VideoInfoGet(ctx context.Context, path string) (*VideoInfo, error) {

@@ -1,40 +1,73 @@
 package hls
 
 import (
+	bytes2 "bytes"
 	"context"
 	"fmt"
-	"github.com/day-dreams/vshare.zhangnan.xyz/internal/service"
+	"github.com/day-dreams/vshare.zhangnan.xyz/internal/utils"
+	"io"
+	"io/ioutil"
+	"path/filepath"
+	"strings"
 )
 
 type DiskFfmpegLoader struct {
 }
 
 func (d DiskFfmpegLoader) M3u8PlayList(ctx context.Context, req *ReqM3u8PlayList) (*ResM3u8PlayList, error) {
-	panic("implement me")
+	dir := GetVidM3u8Path(req.Vid)
+
+	index := filepath.Join(dir, "index.m3u8")
+	bytes, err := ioutil.ReadFile(index)
+	if err != nil {
+		utils.Logger().Errorf("fail to read file. %s,%v", index, err)
+		return nil, err
+	}
+	playlist := bytes2.NewBuffer(bytes)
+
+	res := &ResM3u8PlayList{PlayListContent: ""}
+
+	for {
+
+		line, err := playlist.ReadString('\n')
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			utils.Logger().Errorf("read string failed. %v", err)
+			return nil, err
+		}
+
+		pos := strings.Index(line, "#")
+		if pos == 0 {
+			// # xxxxxx
+			res.PlayListContent += line
+
+		} else if pos < 0 {
+			// indexN.ts
+			num := strings.TrimSuffix(strings.TrimPrefix(line, "index"), ".ts\n")
+			res.PlayListContent += fmt.Sprintf("%s?vid=%s&segment=%s\n", req.Path, req.Vid, num)
+
+		} else {
+			err := fmt.Errorf("invalid line in m3u8.index. [%s]", line)
+			utils.Logger().Error(err)
+			return nil, err
+		}
+
+	}
+
+	return res, nil
 }
 
-func (l *LiveFfmpegLoader) M3u8PlayList(ctx context.Context, req *ReqM3u8PlayList) (*ResM3u8PlayList, error) {
-	path := GetVidPath(req.Vid)
-	vInfo, err := service.VideoInfoGet(ctx, path)
+func (d DiskFfmpegLoader) M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, error) {
+	dir := GetVidM3u8Path(req.Vid)
+	aim := filepath.Join(dir, fmt.Sprintf("index%d.ts", req.Index))
+
+	bytes, err := ioutil.ReadFile(aim)
 	if err != nil {
+		utils.Logger().Errorf("fail to read file. %s,%v", aim, err)
 		return nil, err
 	}
 
-	res := &ResM3u8PlayList{PlayListContent: ""}
-	total := vInfo.Duration
-	DPB := GetDPB()
-	cur := 0
-
-	// header + play list
-	res.PlayListContent += fmt.Sprintf("#EXTM3U\n#EXT-X-TARGETDURATION:%d\n\n", DPB)
-	for ; float64(cur*DPB) <= total; cur += 1 {
-		duration := float64(DPB)
-		if float64(cur*DPB)+duration > total {
-			duration = total - float64(cur*DPB)
-		}
-		// [cur*GetDPB,cur*GetDPB+duration)
-		res.PlayListContent += fmt.Sprintf("#EXTINF:%.2f,\n%s?vid=%s&segment=%d\n", duration, req.Path, req.Vid, cur)
-	}
-	res.PlayListContent += fmt.Sprintf("\n#EXT-X-ENDLIST")
-	return res, nil
+	return &ResM3u8Segment{Content: bytes}, nil
 }

@@ -1,4 +1,4 @@
-package handler
+package cgi
 
 import (
 	"strconv"
@@ -23,7 +23,8 @@ func M3u8PlayList() gin.HandlerFunc {
 			Path: "/api/video/hls/segment",
 		}
 
-		loader := hls.LiveFfmpegLoader{}
+		//loader := hls.LiveFfmpegLoader{}
+		loader := hls.DiskFfmpegLoader{}
 
 		res, err := loader.M3u8PlayList(c, req)
 		if err != nil {
@@ -49,7 +50,9 @@ func M3u8Segment() gin.HandlerFunc {
 		}
 		req.Index = index
 
-		loader := hls.LiveFfmpegLoader{}
+		//loader := hls.LiveFfmpegLoader{}
+		loader := hls.DiskFfmpegLoader{}
+
 		res, err := loader.M3u8Segment(c, req)
 		if err != nil {
 			utils.GinJson(c, nil, err)
