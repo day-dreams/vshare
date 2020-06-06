@@ -47,7 +47,8 @@ func M3u8Segment() gin.HandlerFunc {
 		}
 		req.Index = index
 
-		res, err := hls.M3u8Segment(c, req)
+		loader := hls.LoaderLive{}
+		res, err := loader.M3u8Segment(c, req)
 		if err != nil {
 			utils.GinJson(c, nil, err)
 			return

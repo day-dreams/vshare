@@ -62,7 +62,15 @@ type ResM3u8Segment struct {
 	Content []byte
 }
 
-func M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, error) {
+type M3u8SegmentLoader interface {
+	M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, error)
+}
+
+// LoaderLive 实时调用ffmpeg，生成m3u8文件
+type LoaderLive struct {
+}
+
+func (l *LoaderLive) M3u8Segment(ctx context.Context, req *ReqM3u8Segment) (*ResM3u8Segment, error) {
 
 	vInfo, err := service2.VideoInfoGet(ctx, GetVidPath(req.Vid))
 	if err != nil {

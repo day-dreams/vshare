@@ -15,6 +15,7 @@ __   _____| |__   __ _ _ __ ___
 - 浏览器访问，`http://localhost:8080/?vid=demovid`
 - Reference
     - HLS标准，https://www.rfc-editor.org/pdfrfc/rfc8216.txt.pdf
+    - ffmpeg命令，MP5转m4u8，`ffmpeg -i input.mp4 -profile:v baseline -level 3.0 -s 640x360 -start_number 0 -hls_time 10 -hls_list_size 0 -f hls index.m3u8`
 - todo
     - m3u8视频片段缓存
     - 聊天交互功能
